@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フルスクリーンコメント表示</title>
+    <style>
+        /* コメント表示エリアのスタイル */
+        #comment-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #00ff00;
+        }
+
+        /* コメントのスタイル */
+        .comment {
+            position: absolute;
+            white-space: nowrap;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 右から左にスライドするアニメーションの基本形 */
+        @keyframes slide-left {
+            from {
+                right: -100%;
+            }
+            to {
+                right: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="comment-container" onclick="toggleFullScreen()"></div>
+
+    <script>
+        // WebSocket接続
+        var sock = new WebSocket('https://ws.kosein.dev');
+
+        // 接続成功時のログ
+        sock.addEventListener('open', function (e) {
+            console.log('Socket 接続成功');
+        });
+
+        // サーバーからデータを受け取る
+        sock.addEventListener('message', function (e) {
+            console.log(e.data);
+            displayComment(e.data, 10);  // ここで速度を指定（秒単位）
+        });
+
+        // コメントを表示する関数
+        // duration はアニメーションの持続時間（秒）
+        function displayComment(message, duration) {
+            const commentContainer = document.getElementById('comment-container');
+            const comment = document.createElement('div');
+
+            comment.className = 'comment';
+            comment.textContent = message;
+
+            // ランダムな縦位置に表示
+            const maxHeight = commentContainer.offsetHeight - 30;
+            const randomTop = Math.floor(Math.random() * maxHeight);
+            comment.style.top = randomTop + 'px';
+
+            // 固有のアニメーション名を生成
+            const animationName = `slide-left-${Date.now()}`;
+            const styleSheet = document.styleSheets[0];
+
+            // 新しいアニメーションをスタイルシートに追加
+            styleSheet.insertRule(`
+                @keyframes ${animationName} {
+                    from {
+                        right: -100%;
+                    }
+                    to {
+                        right: 100%;
+                    }
+                }
+            `, styleSheet.cssRules.length);
+
+            // コメント要素にアニメーションを適用
+            comment.style.animation = `${animationName} ${duration}s linear forwards`;
+
+            // コメントエリアに追加
+            commentContainer.appendChild(comment);
+
+            // アニメーション終了後にコメントを削除
+            comment.addEventListener('animationend', function () {
+                commentContainer.removeChild(comment);
+            });
+        }
+
+        // フルスクリーンを切り替える関数
+        function toggleFullScreen() {
+            const element = document.documentElement;
+
+            if (!document.fullscreenElement) {
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if (element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

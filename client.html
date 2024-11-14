@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebSocketコメント送信</title>
+</head>
+<body>
+    <form id="myForm">
+        <label for="comment">コメント</label>
+        <br>
+        <input type="text" id="comment" name="comment" required>
+        <button type="submit">送信</button>
+    </form>
+    <!-- <input type="button" id="sample" value="送信"> -->
+
+    <script>
+        var sock = new WebSocket('https://ws.kosein.dev');
+
+        // 接続
+        sock.addEventListener('open',function(e){
+            console.log('Socket 接続成功');
+        });
+
+        // // サーバーからデータを受け取る
+        // sock.addEventListener('message',function(e){
+        //     console.log(e.data);
+        // });
+
+        
+
+        document.addEventListener('DOMContentLoaded',function(e){
+            document.getElementById("myForm").addEventListener("submit", function(event) {
+                // ページがリロードされないようにデフォルトの送信を防止
+                event.preventDefault();
+
+                // フォームに入力された文字列を取得
+                const comment = document.getElementById("comment").value;
+                // websocketのサーバーに送信
+                sock.send(comment);
+                // フォームに文字が残るのでリセット
+                document.getElementById("myForm").reset();
+                alert("フォームが送信されました！\nコメント: " + comment);
+
+            });
+
+        });
+    </script>
+</body>
+</html>
