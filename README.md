@@ -12,7 +12,6 @@ https://github.com/nexus106/ws_comment_nodejs
 画面をクリックするとフルスクリーンになります
 
 # デモ
-Node.jsのサーバーが起動している状態でページを開いてください
 
 https://ws-comment-static.pages.dev/client
 
