@@ -9,6 +9,7 @@ https://github.com/nexus106/ws_comment_nodejs
 
 ## comment_preview.html
 サーバーから送られてきた文字列を右から左に流します
+画面をクリックするとフルスクリーンになります
 
 # デモ
 Node.jsのサーバーが起動している状態でページを開いてください
