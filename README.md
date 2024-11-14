@@ -1,6 +1,9 @@
 # これは何
 websocketで通信する静的なhtmlファイルです
 
+これと一緒に使ってね
+https://github.com/nexus106/ws_comment_nodejs
+
 ## client.html
 文字列を送信するだけのhtmlファイル
 
